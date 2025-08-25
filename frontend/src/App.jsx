@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 export default function App() {
   const [status, setStatus] = useState('checking...');
 
-VITE_API_URL=http://localhost:4000
   const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
   useEffect(() => {
