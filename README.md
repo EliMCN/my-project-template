@@ -115,4 +115,4 @@ Actualiza semanalmente dependencias `npm` en `/`, `/frontend` y `/backend` crean
 
 ---
 
-¡Listo! Puedes crear tu primer repo desde esta plantilla y empezar a codear con calidad y seguridad desde el día cero.
+¡Listo! Puedes crear tu primer repo desde esta plantilla y empezar a codear con calidad y seguridad desde el día cero. 
