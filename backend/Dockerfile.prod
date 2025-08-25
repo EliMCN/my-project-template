@@ -1,0 +1,17 @@
+# Etapa 1: Builder - Instala dependencias y copia código
+FROM node:18-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+# Instala solo las dependencias de producción para una imagen más ligera
+RUN npm install --only=production
+COPY . .
+
+# Etapa 2: Runner - Imagen final y segura
+FROM node:18-alpine
+WORKDIR /app
+# Crea un usuario no-root para mayor seguridad
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+USER appuser
+COPY --from=builder /app .
+EXPOSE 4000
+CMD [ "node", "src/index.js" ]

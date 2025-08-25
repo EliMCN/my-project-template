@@ -17,22 +17,23 @@ Repo base listo para **GitHub** con:
 ---
 
 ## Cómo usarlo (crear repo desde template)
+
 1. Descarga o clona este repo y súbelo a tu organización.
 2. En GitHub, ve a **Settings → General → Template repository** y marca la opción para usarlo como plantilla.
 3. A partir de ahora, crea nuevos repos con **Use this template**.
 
 ## Desarrollo local
 
-En terminales separadas:
+Desde la raíz del proyecto, instala todo con un solo comando:
 
 ```bash
-cd backend
 npm install
-npm run dev   # -> http://localhost:4000
+```
 
-cd ../frontend
-npm install
-npm run dev   # -> http://localhost:5173
+Luego, para levantar ambos servicios (frontend y backend) en paralelo:
+
+```bash
+npm run dev
 ```
 
 El frontend consulta `GET http://localhost:4000/health` y muestra el estado.
@@ -40,16 +41,18 @@ El frontend consulta `GET http://localhost:4000/health` y muestra el estado.
 ## CI/CD (GitHub Actions)
 
 ### Secrets requeridos (repo → Settings → Secrets and variables → Actions → New repository secret)
+
 - `SNYK_TOKEN`
 - `SONAR_TOKEN`
-- `SONAR_HOST_URL` → para SonarCloud usa `https://sonarcloud.io`
 
 ### Qué corre en cada `push`/`pull_request`
+
 - **Lint** en `frontend` y `backend` (ESLint).
 - **Snyk** (`severity-threshold=high`) → falla el pipeline si hay vulnerabilidades **altas**.
 - **SonarCloud** → publica issues y code smells para cada paquete.
 
 ## Dependabot
+
 Actualiza semanalmente dependencias `npm` en `/`, `/frontend` y `/backend` creando PRs automáticas.
 
 ## Estructura
@@ -85,6 +88,7 @@ my-project-template/
 ```
 
 ## Docker (opcional)
+
 Levanta ambos servicios:
 
 ```bash
@@ -96,6 +100,7 @@ docker compose up --build
 > En modo compose, el navegador sigue accediendo al backend por `http://localhost:4000`.
 
 ## Personalización rápida
+
 - Reemplaza `<TU_ORG>` y `<NOMBRE_PROYECTO>` en los `sonar-project.properties`.
 - Endurece CORS y agrega `helmet` en el backend para prod.
 - Agrega tu capa de DB/framework de migraciones cuando corresponda.
