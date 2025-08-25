@@ -70,7 +70,7 @@ El frontend consulta `GET http://localhost:4000/health` y muestra el estado.
 Levanta los servicios de desarrollo dentro de contenedores Docker.
 
 ```bash
-docker compose up --build
+docker-compose up --build
 ```
 
 - **Frontend:** `http://localhost:5173`
