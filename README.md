@@ -1,12 +1,12 @@
-# Template de proyectos con toolchain estándar
+# Plantilla de Proyecto Full-Stack con Toolchain Estándar
 
 Repo base listo para **GitHub** con:
 
 - **Frontend:** React + Vite (JSX)
 - **Backend:** Node 18+ con Express (+ CORS para dev) y Nodemon
 - **Calidad:** ESLint + Prettier (ambos paquetes)
-- **Seguridad/Calidad en CI:** SonarCloud + Snyk
-- **Automatización:** GitHub Actions (lint, Snyk, Sonar) y Dependabot semanal
+ - **Seguridad/Calidad en CI:** SonarCloud + Snyk
+ - **Automatización:** GitHub Actions (lint, Snyk, Sonar) y Dependabot semanal
 
 > **Asunciones documentadas**
 >
@@ -16,27 +16,75 @@ Repo base listo para **GitHub** con:
 
 ---
 
-## Cómo usarlo (crear repo desde template)
+## Estructura del Proyecto
 
-1. Descarga o clona este repo y súbelo a tu organización.
-2. En GitHub, ve a **Settings → General → Template repository** y marca la opción para usarlo como plantilla.
-3. A partir de ahora, crea nuevos repos con **Use this template**.
-
-## Desarrollo local
-
-Desde la raíz del proyecto, instala todo con un solo comando:
-
-```bash
-npm install
+```text
+my-project-template/
+├── .github/                  # Workflows de CI/CD y Dependabot
+├── backend/                  # Proyecto Node.js con Express
+│   ├── src/
+│   ├── Dockerfile            # Para desarrollo
+│   ├── Dockerfile.prod       # Para producción
+│   └── ...
+├── frontend/                 # Proyecto React con Vite
+│   ├── src/
+│   ├── Dockerfile            # Para desarrollo
+│   ├── Dockerfile.prod       # Para producción (con Nginx)
+│   └── ...
+├── nginx-proxy/              # Configuración del Reverse Proxy para producción
+│   └── nginx.conf
+├── .vscode/
+│   └── settings.json         # Configuración recomendada para VS Code
+├── docker-compose.yml        # Orquestador para desarrollo local
+├── docker-compose.prod.yml   # Orquestador para simular producción
+├── package.json              # Raíz del monorepo (gestiona workspaces)
+└── README.md
 ```
 
-Luego, para levantar ambos servicios (frontend y backend) en paralelo:
+## Cómo Empezar
+
+1.  **Crear Repositorio:** En GitHub, haz clic en **"Use this template"** para crear un nuevo repositorio.
+2.  **Clonar:** Clona tu nuevo repositorio en tu máquina local.
+3.  **Instalar Dependencias:** Abre una terminal en la raíz del proyecto y ejecuta:
+    ```bash
+    npm install
+    ```
+    Este comando instalará las dependencias tanto del `frontend` como del `backend` gracias a los NPM Workspaces.
+
+## Desarrollo Local
+
+Existen tres formas de levantar el entorno, elige la que mejor se adapte a tus necesidades.
+
+### Opción 1: Sin Docker (Recomendado para desarrollo rápido)
+
+Inicia ambos servicios con recarga en caliente (hot-reload).
 
 ```bash
 npm run dev
 ```
 
 El frontend consulta `GET http://localhost:4000/health` y muestra el estado.
+
+### Opción 2: Con Docker (Entorno de desarrollo aislado)
+
+Levanta los servicios de desarrollo dentro de contenedores Docker.
+
+```bash
+docker compose up --build
+```
+
+- **Frontend:** `http://localhost:5173`
+- **Backend:** `http://localhost:4000`
+
+### Opción 3: Simulación de Producción (Docker con Nginx)
+
+Esta opción construye las imágenes optimizadas para producción y las sirve a través de un Reverse Proxy (Nginx), simulando un despliegue real. **No tiene hot-reload.**
+
+```bash
+docker-compose -f docker-compose.prod.yml up --build
+```
+
+- **Acceso Unificado:** `http://localhost` (el proxy redirige a los servicios correctos).
 
 ## CI/CD (GitHub Actions)
 
@@ -54,50 +102,6 @@ El frontend consulta `GET http://localhost:4000/health` y muestra el estado.
 ## Dependabot
 
 Actualiza semanalmente dependencias `npm` en `/`, `/frontend` y `/backend` creando PRs automáticas.
-
-## Estructura
-
-```text
-my-project-template/
-├── backend/
-│   ├── src/
-│   │   └── index.js
-│   ├── Dockerfile
-│   ├── package.json
-│   ├── .eslintrc.json
-│   ├── .prettierrc
-│   └── sonar-project.properties
-├── frontend/
-│   ├── src/
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   ├── index.html
-│   ├── vite.config.js
-│   ├── Dockerfile
-│   ├── package.json
-│   ├── .eslintrc.json
-│   ├── .prettierrc
-│   └── sonar-project.properties
-├── docker-compose.yml
-├── .github/
-│   └── workflows/
-│       └── ci.yml
-├── .github/dependabot.yml
-├── CHECKLIST.md
-└── README.md
-```
-
-## Docker (opcional)
-
-Levanta ambos servicios:
-
-```bash
-docker compose up --build
-# Frontend: http://localhost:5173
-# Backend:  http://localhost:4000
-```
-
-> En modo compose, el navegador sigue accediendo al backend por `http://localhost:4000`.
 
 ## Personalización rápida
 
