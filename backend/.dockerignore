@@ -1,0 +1,14 @@
+# Dependencias
+node_modules
+
+# Git
+.git
+.gitignore
+
+# Variables de entorno y logs
+.env*
+npm-debug.log*
+
+# Archivos de Docker
+Dockerfile
+Dockerfile.prod
