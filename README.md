@@ -1,4 +1,8 @@
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=EliMCN_my-project-template)](https://sonarcloud.io/summary/new_code?id=EliMCN_my-project-template)
+
 # Plantilla de Proyecto Full-Stack con Toolchain Estándar
+
+Repo base listo para **GitHub** con:
 
 Repo base listo para **GitHub** con:
 
@@ -111,4 +115,4 @@ Actualiza semanalmente dependencias `npm` en `/`, `/frontend` y `/backend` crean
 
 ---
 
-¡Listo! Puedes crear tu primer repo desde esta plantilla y empezar a codear con calidad y seguridad desde el día cero 🚀
+¡Listo! Puedes crear tu primer repo desde esta plantilla y empezar a codear con calidad y seguridad desde el día cero.
