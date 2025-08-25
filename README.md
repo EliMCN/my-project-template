@@ -1,4 +1,5 @@
-[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=EliMCN_my-project-template)](https://sonarcloud.io/summary/new_code?id=EliMCN_my-project-template)
+[![Quality Gate Status (Backend)](https://sonarcloud.io/api/project_badges/measure?project=EliMCN_my-project-template_backend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=EliMCN_my-project-template_backend)
+[![Quality Gate Status (Frontend)](https://sonarcloud.io/api/project_badges/measure?project=EliMCN_my-project-template_frontend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=EliMCN_my-project-template_frontend)
 
 # Plantilla de Proyecto Full-Stack con Toolchain Estándar
 
@@ -9,12 +10,12 @@ Repo base listo para **GitHub** con:
 - **Frontend:** React + Vite (JSX)
 - **Backend:** Node 18+ con Express (+ CORS para dev) y Nodemon
 - **Calidad:** ESLint + Prettier (ambos paquetes)
- - **Seguridad/Calidad en CI:** SonarCloud + Snyk
- - **Automatización:** GitHub Actions (lint, Snyk, Sonar) y Dependabot semanal
+- **Seguridad/Calidad en CI:** SonarCloud + Snyk
+- **Automatización:** GitHub Actions (lint, Snyk, Sonar) y Dependabot semanal
 
 > **Asunciones documentadas**
 >
-> - Para que SonarCloud distinga frontend y backend, los `sonar.projectKey` usan sufijos `__frontend` y `__backend` (puedes cambiarlos).
+> - Para que SonarCloud distinga frontend y backend, los `sonar.projectKey` usan sufijos `_frontend` y `_backend` (puedes cambiarlos).
 > - Se agregan archivos mínimos adicionales necesarios para que Vite funcione: `index.html`, `src/main.jsx` y `vite.config.js`.
 > - Se habilita CORS **abierto** en `backend` solo para facilitar el desarrollo local. Endurecer en producción.
 
@@ -115,4 +116,4 @@ Actualiza semanalmente dependencias `npm` en `/`, `/frontend` y `/backend` crean
 
 ---
 
-¡Listo! Puedes crear tu primer repo desde esta plantilla y empezar a codear con calidad y seguridad desde el día cero. 
+¡Listo! Puedes crear tu primer repo desde esta plantilla y empezar a codear con calidad y seguridad desde el día cero.

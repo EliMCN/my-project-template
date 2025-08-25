@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ "main" ] # Ejecuta el push de imágenes solo en la rama principal
+    branches: ["main"] # Ejecuta el push de imágenes solo en la rama principal
   pull_request:
 
 jobs:
@@ -19,9 +19,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18.x'
+          node-version: "18.x"
           # Habilitar caché para npm acelera las instalaciones en ejecuciones futuras
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install all dependencies
         run: npm install
@@ -30,7 +30,7 @@ jobs:
         run: npm run lint
 
       - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/node@master
+        uses: snyk/actions/node@0.7.0
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
@@ -42,7 +42,7 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Requerido por la acción de SonarCloud
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # <-- Usa el token maestro
         with:
           projectBaseDir: backend
 
@@ -50,7 +50,7 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # <-- Usa el token maestro, no es para un proyecto específico, sino para tu organización (elimcn)
         with:
           projectBaseDir: frontend
 
