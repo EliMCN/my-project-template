@@ -49,8 +49,7 @@ jobs:
       - name: Run Snyk to check for vulnerabilities
         id: snyk_test
         if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false }}
-        # Se usa la acción recomendada y un commit específico para máxima estabilidad.
-        uses: snyk/snyk-cli-action@a9152315773153413651b1a6251b14840d00735d # v4.1.0
+        uses: snyk/snyk-cli-action@v4.1.0
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
