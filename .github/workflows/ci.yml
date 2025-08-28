@@ -2,8 +2,13 @@ name: CI
 
 on:
   push:
-    branches: ["main"] # Ejecuta el push de imágenes solo en la rama principal
+    branches: ["main"]
   pull_request:
+
+# Permisos mínimos para subir SARIF a Code Scanning
+permissions:
+  contents: read
+  security-events: write
 
 jobs:
   build_and_test:
@@ -13,14 +18,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          # SonarCloud necesita el historial completo para un análisis preciso de nuevos issues
           fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "18.x"
-          # Habilitar caché para npm acelera las instalaciones en ejecuciones futuras
           cache: "npm"
 
       - name: Install all dependencies
@@ -31,18 +34,17 @@ jobs:
 
       - name: Run Snyk to check for vulnerabilities
         id: snyk_test
-        uses: snyk/snyk-cli-action@v4
-        continue-on-error: true # Permite que el workflow continúe para subir el reporte
+        uses: snyk/actions/node@master   # repo y acción correctos para Node
+        continue-on-error: true          # deja continuar para subir SARIF
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          command: test
-          # Escanea, genera reporte SARIF y falla si hay vulnerabilidades altas
-          args: --all-projects --severity-threshold=high --sarif-file-output=snyk.sarif
+          # Ejecuta 'snyk test' con opciones del CLI y genera SARIF
+          args: test --all-projects --severity-threshold=high --sarif-file-output=snyk.sarif
 
       - name: Upload Snyk report to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v3
-        if: always() # Sube el reporte sin importar si el paso anterior falló
+        if: always()
         with:
           sarif_file: snyk.sarif
 
@@ -53,8 +55,8 @@ jobs:
       - name: SonarCloud Scan (backend)
         uses: SonarSource/sonarqube-scan-action@v2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Requerido por la acción de SonarCloud
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # <-- Usa el token maestro
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           projectBaseDir: backend
 
@@ -62,16 +64,14 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # <-- Usa el token maestro, no es para un proyecto específico, sino para tu organización (elimcn)
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           projectBaseDir: frontend
 
   build-and-push-images:
     name: Build and Push Docker Images
     runs-on: ubuntu-latest
-    # Este job solo se ejecuta si el job 'build_and_test' ha sido exitoso
     needs: build_and_test
-    # Y solo si el evento es un push a la rama 'main'
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
