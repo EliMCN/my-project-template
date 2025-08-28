@@ -30,7 +30,7 @@ jobs:
         run: npm run lint
 
       - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/node@v0.5.0
+        uses: snyk/actions/node@0.8.0
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
@@ -39,7 +39,7 @@ jobs:
           args: --all-projects --severity-threshold=high
 
       - name: SonarCloud Scan (backend)
-        uses: SonarSource/sonarqube-scan-action@v5
+        uses: SonarSource/sonarqube-scan-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Requerido por la acción de SonarCloud
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # <-- Usa el token maestro
@@ -47,7 +47,7 @@ jobs:
           projectBaseDir: backend
 
       - name: SonarCloud Scan (frontend)
-        uses: SonarSource/sonarqube-scan-action@v5
+        uses: SonarSource/sonarqube-scan-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # <-- Usa el token maestro, no es para un proyecto específico, sino para tu organización (elimcn)
