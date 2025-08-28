@@ -46,10 +46,11 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
           SNYK_ORG: ${{ secrets.SNYK_ORG }}
 
+      # ✅ Acción oficial de Snyk para Node (no la cli-action vieja)
       - name: Run Snyk to check for vulnerabilities
         id: snyk_test
         if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false }}
-        uses: snyk/snyk-cli-action@v4.1.0
+        uses: snyk/actions/node@master
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
