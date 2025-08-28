@@ -5,13 +5,12 @@ on:
     branches: ["main"]
   pull_request:
 
-# Permisos mínimos globales (añadimos security-events para subir SARIF)
 permissions:
   contents: read
   security-events: write
 
 env:
-  # Leído desde Secrets (Settings → Actions → Secrets)
+  # Si querés usar una org explícita, guardá el slug como secreto SNYK_ORG.
   SNYK_ORG: ${{ secrets.SNYK_ORG }}
 
 jobs:
@@ -36,29 +35,55 @@ jobs:
       - name: Run linting for all projects
         run: npm run lint
 
-      - name: Run Snyk to check for vulnerabilities
-        id: snyk_test
-        uses: snyk/actions/node@master    # acción oficial de Snyk para Node
-        continue-on-error: true           # permite subir SARIF aunque el scan falle
+      # Verifica secretos (token personal + org opcional)
+      - name: Sanity-check Snyk secrets
+        run: |
+          [ -n "$SNYK_TOKEN" ] || (echo "SNYK_TOKEN vacío"; exit 1)
+          if [ -z "$SNYK_ORG" ]; then
+            echo "SNYK_ORG no definido; se usará la organización por defecto del usuario."
+          else
+            echo "SNYK_ORG definido."
+          fi
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          SNYK_ORG: ${{ secrets.SNYK_ORG }}
+
+      # Ejecuta Snyk (se salta en PRs desde forks)
+      - name: Run Snyk to check for vulnerabilities
+        id: snyk_test
+        if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false }}
+        uses: snyk/actions/node@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          SNYK_ORG: ${{ secrets.SNYK_ORG }}
         with:
+          command: test
           args: >
-            test
-            --org=${{ env.SNYK_ORG }}
+            ${{ env.SNYK_ORG != '' && format('--org={0}', env.SNYK_ORG) || '' }}
             --all-projects
             --severity-threshold=high
             --sarif-file-output=snyk.sarif
 
+      - name: Debug SARIF presence
+        if: always()
+        run: |
+          ls -la
+          test -f snyk.sarif && echo "SARIF generado" || echo "SARIF NO generado"
+
       - name: Upload Snyk report to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v3
-        # solo sube si el archivo existe (evita "Path does not exist")
         if: ${{ always() && hashFiles('snyk.sarif') != '' }}
         with:
           sarif_file: snyk.sarif
 
+      # Falla SOLO en push a main y si Snyk falló (con SARIF generado)
       - name: Fail build if Snyk found issues
-        if: steps.snyk_test.outcome == 'failure'
+        if: >
+          steps.snyk_test.outcome == 'failure' &&
+          github.event_name == 'push' &&
+          github.ref == 'refs/heads/main' &&
+          hashFiles('snyk.sarif') != ''
         run: exit 1
 
       - name: SonarCloud Scan (backend)
@@ -82,8 +107,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build_and_test
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
-    # Para publicar en GHCR con GITHUB_TOKEN hay que habilitar packages: write en este job
     permissions:
       contents: read
       packages: write
