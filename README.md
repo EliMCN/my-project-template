@@ -1,6 +1,6 @@
-[![CI](https://github.com/<owner>/<repo>/actions/workflows/ci.yml/badge.svg)](https://github.com/<owner>/<repo>/actions/workflows/ci.yml)
-[![Quality Gate Status (Backend)](https://sonarcloud.io/api/project_badges/measure?project=<SONAR_KEY_BACKEND>&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=<SONAR_KEY_BACKEND>)
-[![Quality Gate Status (Frontend)](https://sonarcloud.io/api/project_badges/measure?project=<SONAR_KEY_FRONTEND>&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=<SONAR_KEY_FRONTEND>)
+[![CI](https://github.com/EliMCN/my-project-template/actions/workflows/ci.yml/badge.svg)](https://github.com/EliMCN/my-project-template/actions/workflows/ci.yml)
+[![Quality Gate Status (Backend)](https://sonarcloud.io/api/project_badges/measure?project=EliMCN_my-project-template_backend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=EliMCN_my-project-template_backend)
+[![Quality Gate Status (Frontend)](https://sonarcloud.io/api/project_badges/measure?project=EliMCN_my-project-template_frontend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=EliMCN_my-project-template_frontend)
 
 # Plantilla de Proyecto Full-Stack con Toolchain Estándar
 
