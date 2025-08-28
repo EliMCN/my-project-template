@@ -30,13 +30,25 @@ jobs:
         run: npm run lint
 
       - name: Run Snyk to check for vulnerabilities
-        uses: snyk/snyk-cli-action@v1.5.0
+        id: snyk_test
+        uses: snyk/snyk-cli-action@v4
+        continue-on-error: true # Permite que el workflow continúe para subir el reporte
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: test
-          # Escanea todos los proyectos (frontend y backend) definidos en los workspaces
-          args: --all-projects --severity-threshold=high
+          # Escanea, genera reporte SARIF y falla si hay vulnerabilidades altas
+          args: --all-projects --severity-threshold=high --sarif-file-output=snyk.sarif
+
+      - name: Upload Snyk report to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        if: always() # Sube el reporte sin importar si el paso anterior falló
+        with:
+          sarif_file: snyk.sarif
+
+      - name: Fail build if Snyk found issues
+        if: steps.snyk_test.outcome == 'failure'
+        run: exit 1
 
       - name: SonarCloud Scan (backend)
         uses: SonarSource/sonarqube-scan-action@v2
